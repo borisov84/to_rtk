@@ -1,11 +1,25 @@
 import csv
 import time
+import os
+import openpyxl
 
 
 start = time.time()
-
+departments_numbers = {}
+departments_files = os.listdir('departments')
+# print(departments_files)
+wb = openpyxl.Workbook()
+os.chdir('departments')
+for df in departments_files:
+    with open(df, 'r') as file:
+        # print(file.name)
+        phone_numbers = file.read().splitlines()
+        departments_numbers[file.name] = phone_numbers
+        sheet = wb.create_sheet(file.name.split('.')[0])
+print(departments_numbers)
 
 def convert():
+    os.chdir('..')
     filename = 'rtk.csv'
     result = []
     with open(filename, 'r', encoding='utf-8') as csv_file:
@@ -19,11 +33,25 @@ def convert():
                 if a[11] == '':
                     a[11] = '0'
                 result.append([a[0].replace('Итого т.', ''), int(a[10]) + int(a[11])/100])
-    print(len(result))
+    # print(len(result))
+    # print(result)
     csv_file.close()
-    end = time.time() - start
-    print(end)
+    row = 1
+    for sums in result:
+        for dep, nums in departments_numbers.items():
+            # print(f'Sums - {sums}, Nums - {nums}')
+            if sums[0] in nums:
+                print(f'{dep} {sums[0]}: {sums[1]}')
+                sheet = wb[dep.split('.')[0]]
+                num_cell = sheet.cell(row=sheet.max_row + 1, column=1)
+                num_cell.value = sums[0]
+                money_cell = sheet.cell(row=sheet.max_row, column=2)
+                money_cell.value = sums[1]
+                row += 1
+    wb.save('test.xlsx')
 
 
 if __name__ == '__main__':
     convert()
+    end = time.time() - start
+    print(end)
