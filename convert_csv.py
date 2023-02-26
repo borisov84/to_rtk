@@ -2,9 +2,12 @@ import csv
 import time
 import os
 import openpyxl
+import pandas as pd
 
 
 start = time.time()
+df = pd.read_excel('rtk.xlsx')
+df.to_csv('out.csv', encoding='utf-8', sep=';', decimal=',', header=False, index=False)
 departments_numbers = {}
 departments_files = os.listdir('departments')
 # print(departments_files)
@@ -22,7 +25,7 @@ for df in departments_files:
 
 def convert():
     os.chdir('..')
-    filename = 'rtk.csv'
+    filename = 'out.csv'
     result = []
     # перебираем файл и собираем звонки в список
     with open(filename, 'r', encoding='utf-8') as csv_file:
@@ -33,7 +36,10 @@ def convert():
                 if len(row) > 1:
                     # print(row[])
                     a.append(row[1].split(';')[0])
-                if a[11] == '':
+                if a[10].find('.') != -1:
+                    a[11] = a[10].split('.')[1]
+                    a[10] = a[10].split('.')[0]
+                else:
                     a[11] = '0'
                 result.append([a[0].replace('Итого т.', ''), int(a[10]) + int(a[11])/100])
     # print(len(result))
@@ -54,7 +60,7 @@ def convert():
                 money_cell.value = sums[1]
                 to_remove.append(ind)
     # print(len(to_remove))
-    result[:] = [x for i,x in enumerate(result) if i not in to_remove]
+    result[:] = [x for i, x in enumerate(result) if i not in to_remove]
     # выводим отсев
     sheet = wb['Sheet']
     sheet.title = 'Отсев'
