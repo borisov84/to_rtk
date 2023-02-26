@@ -53,7 +53,7 @@ def convert():
                 money_cell = sheet.cell(row=sheet.max_row, column=2)
                 money_cell.value = sums[1]
                 to_remove.append(ind)
-    print(len(to_remove))
+    # print(len(to_remove))
     result[:] = [x for i,x in enumerate(result) if i not in to_remove]
     # выводим отсев
     sheet = wb['Sheet']
@@ -64,7 +64,7 @@ def convert():
         ots_cell = sheet.cell(row=sheet.max_row, column=2)
         ots_cell.value = o[1]
     wb.save('output.xlsx')
-    print(len(result))
+    # print(len(result))
 
 
 if __name__ == '__main__':
