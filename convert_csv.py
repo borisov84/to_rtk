@@ -48,7 +48,7 @@ def convert():
                 money_cell = sheet.cell(row=sheet.max_row, column=2)
                 money_cell.value = sums[1]
                 row += 1
-    wb.save('test.xlsx')
+    wb.save('output.xlsx')
 
 
 if __name__ == '__main__':
